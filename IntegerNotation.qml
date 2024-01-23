@@ -281,7 +281,9 @@ MuseScore {
         } else {
             keySigText = "C";
         }
-        return `${prefix}${keySigText} (${noteName}4=${pitchClass + 60})`;
+        var refNote = pitchClass + 60;
+        inputReferenceNote.value = refNote;
+        return `${prefix}${keySigText} (${noteName}4=${refNote})`;
     }
 
     function formatText(text) {
