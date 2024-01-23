@@ -105,35 +105,39 @@ MuseScore {
         }
         RowLayout {
             Label {
-                text: "Part"
+                text: "Voice"
                 Layout.fillWidth: true
             }
             ComboBox {
                 currentIndex: 0
                 model: ListModel {
-                    id: inputPart
+                    id: inputVoice
                     property var key
                     ListElement {
-                        text: "Part 1"
+                        text: "All"
+                        pName: -1
+                    }
+                    ListElement {
+                        text: "Voice 1"
                         pName: 0
                     }
                     ListElement {
-                        text: "Part 2"
+                        text: "Voice 2"
                         pName: 1
                     }
                     ListElement {
-                        text: "Part 3"
+                        text: "Voice 3"
                         pName: 2
                     }
                     ListElement {
-                        text: "Part 4"
+                        text: "Voice 4"
                         pName: 3
                     }
                 }
                 Layout.preferredWidth: 100
                 Layout.alignment: Qt.AlignRight
                 onCurrentIndexChanged: {
-                    inputPart.key = inputPart.get(currentIndex).pName;
+                    inputVoice.key = inputVoice.get(currentIndex).pName;
                 }
             }
         }
@@ -280,10 +284,6 @@ MuseScore {
         return `${prefix}${keySigText} (${noteName}4=${pitchClass + 60})`;
     }
 
-    function calcYOffset(part) {
-        return 2 * part;
-    }
-
     function formatText(text) {
         // text.subStyle = 50;  // User-3
         text.placement = Placement.BELOW;
@@ -303,7 +303,7 @@ MuseScore {
         var endStaff;
         var endTick;
         var fullScore = false;
-        var selPart = 0;
+
         cursor.rewind(1);  // rewind to start of selection
         if (!cursor.segment) {
             // no selection
@@ -320,39 +320,40 @@ MuseScore {
             }
             endStaff = cursor.staffIdx;
         }
-        for (var staff = startStaff; staff <= endStaff; staff++) {
-            var part = inputPart.key;
-            cursor.rewind(1); // beginning of selection
-            cursor.part = part;
-            cursor.staffIdx = staff;
-            if (fullScore)  // no selection
-                cursor.rewind(0); // beginning of score
+        for (let staff = startStaff; staff <= endStaff; staff++) {
+            for (var voice = 0; voice < 4; voice++) {
+                if (inputVoice.key != -1 && inputVoice.key != voice)
+                    continue;
+                cursor.rewind(1); // beginning of selection
+                cursor.voice = voice;
+                cursor.staffIdx = staff;
+                if (fullScore)  // no selection
+                    cursor.rewind(0); // beginning of score
 
-            while (cursor.segment && (fullScore || cursor.tick < endTick)) {
-                if (cursor.element && cursor.element.type == Element.CHORD) {
-                    // If it is a note, not a rest
-                    var text = newElement(Element.STAFF_TEXT);
-                    var graceChords = cursor.element.graceNotes;
-                    for (var i = 0; i < graceChords.length; i++) {
-                        var notes = graceChords[i].notes;
+                while (cursor.segment && (fullScore || cursor.tick < endTick)) {
+                    if (cursor.element && cursor.element.type == Element.CHORD) {
+                        // If it is a note, not a rest
+                        var graceNotes = cursor.element.graceNotes;
+                        for (let i = 0; i < graceNotes.length; i++) {
+                            let notes = graceNotes[i].notes;
+                            let text = newElement(Element.STAFF_TEXT);
+                            writeNoteText(notes, text, inputNotationFormat.key);
+                            formatText(text);
+                            text.fontSize = inputFontSize.value * 0.7;
+                            text.offsetX += -2.0 * (graceNotes.length - i);      // X position of Grace note
+                            cursor.add(text);
+                            text = newElement(Element.STAFF_TEXT);
+                        } // end graceNotes
+
+                        let text = newElement(Element.STAFF_TEXT);
+                        let notes = cursor.element.notes;
                         writeNoteText(notes, text, inputNotationFormat.key);
                         formatText(text);
-                        text.fontSize = inputFontSize.value * 0.7;
-                        text.offsetX += -2.0 * (graceChords.length - i);      // X position of Grace note
-                        text.offsetY += calcYOffset(part); // Fixed missing semicolon here
-                        cursor.add(text);
-                        text = newElement(Element.STAFF_TEXT);
-                    } // end graceChords
-
-                    var text = newElement(Element.STAFF_TEXT);
-                    var notes = cursor.element.notes;
-                    writeNoteText(notes, text, inputNotationFormat.key);
-                    formatText(text);
-                    text.offsetY += calcYOffset(part);
-                    cursor.add(text); //   音符に表示
-                }
-                cursor.next();
-            } // end while segment
+                        cursor.add(text); //   音符に表示
+                    }
+                    cursor.next();
+                } // end while
+            } // end for voice
         } // end for staff
     } // end function
 
