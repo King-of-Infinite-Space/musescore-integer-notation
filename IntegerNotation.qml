@@ -323,7 +323,7 @@ MuseScore {
             endStaff = cursor.staffIdx;
         }
         for (let staff = startStaff; staff <= endStaff; staff++) {
-            for (var voice = 0; voice < 4; voice++) {
+            for (let voice = 0; voice < 4; voice++) {
                 if (inputVoice.key != -1 && inputVoice.key != voice)
                     continue;
                 cursor.rewind(1); // beginning of selection
@@ -335,21 +335,18 @@ MuseScore {
                 while (cursor.segment && (fullScore || cursor.tick < endTick)) {
                     if (cursor.element && cursor.element.type == Element.CHORD) {
                         // If it is a note, not a rest
-                        var graceNotes = cursor.element.graceNotes;
+                        let graceNotes = cursor.element.graceNotes;
                         for (let i = 0; i < graceNotes.length; i++) {
                             let notes = graceNotes[i].notes;
-                            let text = newElement(Element.STAFF_TEXT);
-                            writeNoteText(notes, text, inputNotationFormat.key);
+                            let text = createNoteText(notes, inputNotationFormat.key);
                             formatText(text);
                             text.fontSize = inputFontSize.value * 0.7;
-                            text.offsetX += -2.0 * (graceNotes.length - i);      // X position of Grace note
+                            text.offsetX += -1.5 * (graceNotes.length - i);      // X position of Grace note
                             cursor.add(text);
-                            text = newElement(Element.STAFF_TEXT);
                         } // end graceNotes
 
-                        let text = newElement(Element.STAFF_TEXT);
                         let notes = cursor.element.notes;
-                        writeNoteText(notes, text, inputNotationFormat.key);
+                        let text = createNoteText(notes, inputNotationFormat.key);
                         formatText(text);
                         cursor.add(text); //   音符に表示
                     }
@@ -359,7 +356,7 @@ MuseScore {
         } // end for staff
     } // end function
 
-    function writeNoteText(notes, text, notationFormat) {
+    function createNoteText(notes, notationFormat) {
         var formats = [];
         formats.push(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]);
         formats.push(["1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7"]);
@@ -371,6 +368,7 @@ MuseScore {
             }
             return noteText;
         }
+        let text = newElement(Element.STAFF_TEXT)
         var dot = "•";
         var sep = "\n";
         for (var i = 0; i < notes.length; i++) {
@@ -389,5 +387,6 @@ MuseScore {
                 text.text = textBefore + getNoteText(pitchClass) + text.text;
             }// end for tieBack
         }
+        return text;
     } // end for note
 } // end MuseScore
