@@ -28,7 +28,7 @@ MuseScore {
     description: qsTr("Add Integer Notation or Numbered Notation of the notes below the staves")
     pluginType: "dialog"
     width: 300  // menu window size
-    height: 500
+    height: 540
 
     Component.onCompleted: {
         if (mscoreMajorVersion >= 4) {
@@ -141,6 +141,119 @@ MuseScore {
                 }
             }
         }
+
+        RowLayout {
+            Label {
+                text: "Text style"
+                Layout.fillWidth: true
+            }
+            ComboBox {
+                currentIndex: 0
+                model: ListModel {
+                    id: inputStyle
+                    property var key
+                    ListElement {
+                        text: "Custom"
+                        pName: -1
+                    }
+                    ListElement {
+                        text: "User-1"
+                        pName: 49
+                    }
+                    ListElement {
+                        text: "User-2"
+                        pName: 50
+                    }
+                    ListElement {
+                        text: "User-3"
+                        pName: 51
+                    }
+                    ListElement {
+                        text: "User-4"
+                        pName: 52
+                    }
+                    ListElement {
+                        text: "User-5"
+                        pName: 53
+                    }
+                    ListElement {
+                        text: "User-6"
+                        pName: 54
+                    }
+                    ListElement {
+                        text: "User-7"
+                        pName: 55
+                    }
+                    ListElement {
+                        text: "User-8"
+                        pName: 56
+                    }
+                    ListElement {
+                        text: "User-9"
+                        pName: 57
+                    }
+                    ListElement {
+                        text: "User-10"
+                        pName: 58
+                    }
+                    ListElement {
+                        text: "User-11"
+                        pName: 59
+                    }
+                    ListElement {
+                        text: "User-12"
+                        pName: 60
+                    }
+                }
+                Layout.preferredWidth: 100
+                Layout.alignment: Qt.AlignRight
+                onCurrentIndexChanged: {
+                    inputStyle.key = inputStyle.get(currentIndex).pName;
+                }
+            }
+        }
+
+        RowLayout {
+            Label {
+                text: "Placement"
+                Layout.fillWidth: true
+            }
+            ComboBox {
+                currentIndex: 0
+                model: ListModel {
+                    id: inputPlacement
+                    property var key
+                    ListElement {
+                        text: "Above"
+                        pName: "above"
+                    }
+                    ListElement {
+                        text: "Below"
+                        pName: "below"
+                    }
+                }
+                Layout.preferredWidth: 100
+                Layout.alignment: Qt.AlignRight
+                onCurrentIndexChanged: {
+                    inputPlacement.key = inputPlacement.get(currentIndex).pName;
+                }
+                enabled: (inputStyle.key == -1)
+            }
+        }
+        RowLayout {
+            Label {
+                text: "Auto placement (prevent overlap)"
+                Layout.fillWidth: true
+            }
+            CheckBox {
+                id: inputAutoPlacement
+                text: ""
+                checked: true
+                Layout.alignment: Qt.AlignRight
+                enabled: (inputStyle.key == -1)
+            }
+        }
+
         RowLayout {
             Label {
                 text: "Font Size"
@@ -154,6 +267,7 @@ MuseScore {
                 maximumValue: 36
                 value: 10
                 Layout.alignment: Qt.AlignRight
+                enabled: (inputStyle.key == -1)
             }
         }
 
@@ -171,6 +285,7 @@ MuseScore {
                 value: 0.9
                 stepSize: 0.05
                 Layout.alignment: Qt.AlignRight
+                enabled: (inputStyle.key == -1)
             }
         }
         RowLayout {
@@ -187,6 +302,7 @@ MuseScore {
                 value: 1
                 stepSize: 0.1
                 Layout.alignment: Qt.AlignRight
+                enabled: (inputStyle.key == -1)
             }
         }
         RowLayout {
@@ -200,8 +316,9 @@ MuseScore {
                 decimals: 0
                 minimumValue: -20
                 maximumValue: 30
-                value: 4
+                value: 0
                 Layout.alignment: Qt.AlignRight
+                enabled: (inputStyle.key == -1)
             }
         }
 
@@ -215,6 +332,7 @@ MuseScore {
                 text: "#000000"
                 Layout.preferredWidth: 60
                 Layout.alignment: Qt.AlignRight
+                enabled: (inputStyle.key == -1)
             }
         }
 
@@ -287,16 +405,28 @@ MuseScore {
     }
 
     function formatText(text) {
-        // text.subStyle = 50;  // User-3
-        text.placement = Placement.BELOW;
-        text.autoplace = false;
-        text.align = Align.RIGHT + Align.BASELINE;
-        text.fontFace = fontFamily;
-        text.fontSize = inputFontSize.value;
-        text.lineSpacing = inputLineSpacing.value; // no effect yet
-        text.color = inputFontColor.text;
-        text.offsetX = inputXOffset.value;
-        text.offsetY = inputYOffset.value;
+        if (inputStyle.key == -1) {
+            // 56 = User-8
+            // 60 = User-12
+            text.subStyle = 60
+
+            text.placement = inputPlacement.key == "above" ? Placement.ABOVE : Placement.BELOW;
+            // above or below the staff
+            text.autoplace = inputAutoPlacement.checked ? true : false;
+            // automatically place the text to prevent overlapping with other elements
+            text.align = Align.RIGHT + Align.BASELINE;
+            // text alignment horizontally and vertically
+            text.fontFace = fontFamily;
+            text.fontSize = inputFontSize.value;
+            text.textLineSpacing = inputLineSpacing.value;
+            // no effect, lineSpacing seems not exposed to plugin API yet
+            // https://github.com/musescore/MuseScore/blob/ed678925efbbdbb9bd14ea3f6f7c9b5ab42491e7/src/plugins/api/elements.h#L348
+            text.color = inputFontColor.text;
+            text.offsetX = inputXOffset.value;
+            text.offsetY = inputYOffset.value;
+        } else {
+            text.subStyle = inputStyle.key;
+        }
     }
 
     function applyToSelection() {
