@@ -6,10 +6,10 @@ MuseScore plugin to add integer notation (pitch class / chromatic scale) or numb
 
 
 **Normal version**: Add notation above or below staves, for entire score or selection.
-普通版：将数字谱号添加在谱表上方或下方，应用于整张谱或选中的部分。
+普通版：将数字谱号添加在谱表上方或下方。应用于整张谱或选中的部分。
 
-**Inside version**: Add notation on noteheads and hide noteheads, for entire score.
-内部版：将数字谱号添加在符头位置，并隐藏符头。
+**Inside version**: Add notation on noteheads and hide noteheads, for entire score or selection.
+内部版：将数字谱号添加在符头位置，并隐藏符头。应用于整张谱或选中的部分。
 
 The notation format can be 0~11 (pitch class) or 1~7 (Jianpu, with # and b). The reference note (the note corresponding to 0 or 1) is customizable.
 数字谱号可选格式：音高集合0~11或简谱1~7（带升降号）。参考音（0或1对应的音符）可自定义。
@@ -31,8 +31,8 @@ Inside version (stave lines hidden manually) | 内部版（手动隐藏了谱线
 
 #### Additional remark | 额外说明
 
-On Insider version, to distinguish between quarter notes and half notes after noteheads are hidden, numbers on half notes are circled.
-内部版中，为区分隐藏符头后的四分音符和二分音符，二分音符上的数字被圈出。
+On Insider version, to distinguish between quarter notes and half notes after noteheads are hidden, numbers on half notes are italicized.
+内部版中，为区分隐藏符头后的四分音符和二分音符，二分音符上的数字用斜体显示。
 
 To achieve a clean look on Inside Version, I recommend manually setting Lines = 1, Line distance >= 1.25 sp, turn off Show leger lines (Right click on a measure > Stave/Part properties > Advanced style properties). Additionally, reducing the width of stems to around 0.06 may help (Right click on stem > Select > Similar > Properties (main panel) > Show more).
 为了让内部版更美观，推荐以下手动设置：谱线=1、谱线间距至少1.25、取消显示加线（右击小节 > 谱表/分谱属性 > 高级样式属性）。另外，将符干粗细减小到0.06左右可能也有帮助（右击符干 > 选择 > 相似内容 > 属性(主面板) > 显示更多）。

@@ -339,8 +339,9 @@ MuseScore {
 
     function main() {
         var cursor = curScore.newCursor();
-        var startStaff = 0;
-        var endStaff = curScore.nstaves - 1;
+        var startStaff;
+        var endStaff;
+        var endTick;
         var fullScore = false;
 
         cursor.rewind(1);  // rewind to start of selection
@@ -349,21 +350,30 @@ MuseScore {
             fullScore = true;
             startStaff = 0; // start with 1st staff
             endStaff = curScore.nstaves - 1; // and end with last
-        } 
+        } else {
+            startStaff = cursor.staffIdx;
+            cursor.rewind(2); // rewind to end of selection
+            if (cursor.tick == 0) {
+                endTick = curScore.lastSegment.tick + 1;
+            } else {
+                endTick = cursor.tick;
+            }
+            endStaff = cursor.staffIdx;
+        }
         for (let staff = startStaff; staff <= endStaff; staff++) {
             for (let voice = 0; voice < 4; voice++) {
+                cursor.rewind(1);
                 cursor.voice = voice;
                 cursor.staffIdx = staff;
-                cursor.rewind(0); // beginning of score
-                let staffModified = false
-                while (cursor.segment) {
+                if (fullScore)  // no selection
+                    cursor.rewind(0); // beginning of score
+
+                while (cursor.segment && (fullScore || cursor.tick < endTick)) {
                     if (cursor.element && cursor.element.type == Element.CHORD) {
-                        // if (!staffModified) {
                         //     let staff = cursor.element.staff
                         //     staff.staffLines = 1
                         //     staff.lineDistance = 1.25
                         //     staffModified = true
-                        // }
                         // staff properties not exposed as api
                         // see https://musescore.org/en/node/310685
                         
@@ -390,14 +400,10 @@ MuseScore {
             formatText(textEl, isGrace);
             if (note.durationType.type == 3) {
                 // half note
-                textEl.frameType = 2 // circle
-                textEl.framePadding = 0.1
+                // textEl.frameType = 2 // circle
+                // textEl.framePadding = 0.1
+                textEl.fontStyle = 2 // italic
             }
-            // if (note.durationType.type == 4) {
-            //     // quarter note
-            //     textEl.frameType = 1 // square
-            //     textEl.framePadding = 0.1
-            // }
             note.add(textEl);
             if (inputHideMethod.currentText == "color") {
                 note.color = invisibleColor
