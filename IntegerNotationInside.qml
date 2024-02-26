@@ -24,7 +24,7 @@ import Qt.labs.settings 1.0
 MuseScore {
     id: mainWindow
     menuPath: "Plugins." + qsTr("Integer Notation Inside")
-    version: "0.1.0"
+    version: "0.2.0"
     description: qsTr("Replace noteheads with Integer Notation or Numbered Notation")
     pluginType: "dialog"
     width: 300  // menu window size
