@@ -40,8 +40,8 @@ Inside version (with vertical re-positioning, stave lines hidden manually) | 内
 
 #### Why use pitch class | 为什么使用音高集合
 
-Why not? "Pitch class" represents twelve notes in an octave by numbers 0~11. This notation is intuitive and straighforward because people already know how to do arithmetic and how to read the clock face. Intervals are simply differences between numbers. For example, if the tonic is 0, then the major scale is 0, 2, 4, 5, 7, 9, 11.   
-为什么不？“音高集合”用数字0~11表示八度里的12个音。这种形式简单直观，因为人们本来已经会做算术以及读钟表。数字之差就是音程。例如，如果主音是0，那么大调音阶就是0、2、4、5、7、9、11。
+Why not? "Pitch class" represents twelve notes in an octave by numbers 0-11. This notation is intuitive and straighforward because people already know how to do arithmetic and how to read the clock face. Intervals are simply differences between numbers. For example, if the tonic is 0, then the major scale is 0, 2, 4, 5, 7, 9, 11.   
+为什么不？“音高集合”用数字0-11表示八度里的12个音。这种形式简单直观，因为人们本来已经会做算术以及读钟表。数字之差就是音程。例如，如果主音是0，那么大调音阶就是0、2、4、5、7、9、11。
 
 #### Remark | 说明
 
