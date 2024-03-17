@@ -96,7 +96,18 @@ MuseScore {
                 Layout.fillWidth: true
             }
         }
-
+        RowLayout {
+            Label {
+                text: "Re-position notes vertically"
+                Layout.fillWidth: true
+            }
+            CheckBox {
+                id: inputReposition
+                text: ""
+                checked: true
+                Layout.alignment: Qt.AlignRight
+            }
+        }
         RowLayout {
             Label {
                 text: "Show Octave Dots (like Jianpu)"
@@ -324,6 +335,10 @@ MuseScore {
             textEl.color = inputTextColor.text
             textEl.offsetX = inputXOffset.value
             textEl.offsetY = 0
+            if (inputReposition.checked) {
+                textEl.align = Align.RIGHT + Align.BASELINE;
+                textEl.offsetY = 0.5
+            }
         } else {
             textEl.subStyle = inputStyle.key;
         }
@@ -426,6 +441,14 @@ MuseScore {
                 if (inputHideMethod.currentText == "visibility") {
                     note.accidental.visible = false
                 }
+            }
+            if (inputReposition.checked) {
+                note.fixed = true
+                note.fixedLine = 1 + 3*(notes.length - 1 - i)
+                // i=0 is lowest note, line 1 is top space
+                note.stemDirection = 1
+                // stem up (to the right of notes)
+                // prevent occlusion of octave dots (to the left of notes)
             }
         }
     }
