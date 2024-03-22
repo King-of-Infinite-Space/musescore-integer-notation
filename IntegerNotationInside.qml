@@ -24,11 +24,11 @@ import Qt.labs.settings 1.0
 MuseScore {
     id: mainWindow
     menuPath: "Plugins." + qsTr("Integer Notation Inside")
-    version: "0.3.0"
+    version: "0.4.0"
     description: qsTr("Replace noteheads with Integer Notation or Numbered Notation")
     pluginType: "dialog"
-    width: 300  // menu window size
-    height: 430
+    width: 320  // menu window size
+    height: 460
 
     Component.onCompleted: {
         if (mscoreMajorVersion >= 4) {
@@ -66,10 +66,10 @@ MuseScore {
                         text: "0~11"
                     }
                     ListElement {
-                        text: "1~7,♯"
+                        text: "1~7,♭"
                     }
                     ListElement {
-                        text: "1~7,♭"
+                        text: "1~7,♯"
                     }
                 }
             }
@@ -98,6 +98,41 @@ MuseScore {
         }
         RowLayout {
             Label {
+                text: "Reference note signature"
+                Layout.fillWidth: true
+            }
+            ComboBox {
+                id: inputRefSigFormat
+                Layout.alignment: Qt.AlignRight
+                Layout.preferredWidth: 100
+                currentIndex: 0
+                model: ListModel {
+                    ListElement {
+                        text: "1st degree (0=X / 1=X)"
+                    }
+                    ListElement {
+                        text: "6th degree (9=X / 6=X)"
+                    }
+                    ListElement {
+                        text: "None"
+                    }
+                }
+            }
+        }
+        RowLayout {
+            Label {
+                text: "Show octave dots (like Jianpu)"
+                Layout.fillWidth: true
+            }
+            CheckBox {
+                id: inputOctaveDots
+                text: ""
+                checked: true
+                Layout.alignment: Qt.AlignRight
+            }
+        }
+        RowLayout {
+            Label {
                 text: "Re-position notes vertically"
                 Layout.fillWidth: true
             }
@@ -108,17 +143,20 @@ MuseScore {
                 Layout.alignment: Qt.AlignRight
             }
         }
-        RowLayout {
-            Label {
-                text: "Show Octave Dots (like Jianpu)"
-                Layout.fillWidth: true
-            }
-            CheckBox {
-                id: inputOctaveDots
-                text: ""
-                checked: true
-                Layout.alignment: Qt.AlignRight
-            }
+        Rectangle {
+            width: parent.width
+            height: 2
+            color: "transparent"
+        }
+        Rectangle {
+            width: parent.width
+            height: 1
+            color: "#cccccc"
+        }
+        Rectangle {
+            width: parent.width
+            height: 2
+            color: "transparent"
         }
         RowLayout {
             Label {
@@ -287,21 +325,30 @@ MuseScore {
             quit();
     }
 
+    function pcToNoteName(pc, format) {
+        var noteNamesFormats = {
+            "flat": ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"],
+            "sharp": ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"],
+            "minor": ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"]
+        }
+        return noteNamesFormats[format][pc];
+    }
+
     function findKeySignature() {
         var c = curScore.newCursor();
         // c.inputStateMode = Cursor.INPUT_STATE_SYNC_WITH_SCORE;
         var keySigOffset = c.keySignature;
-        var prefix = "  Key Signature: ";
+        var prefix = "Initial key ";
         if (isNaN(keySigOffset)) {
             return prefix + "unknown";
         }
         var offsetToClass = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5];
-        var noteNames = ["C", "D♭", "D", "E♭", "E", "F", "F♯/G♭", "G", "A♭", "A", "B♭", "B"];
+        
         var keyIndex = keySigOffset;
         if (keyIndex < 0)
             keyIndex += 12;
         var pitchClass = offsetToClass[keyIndex];
-        var noteName = noteNames[pitchClass];
+        var noteName = pcToNoteName(pitchClass, "flat");
         if (keySigOffset == 6) {
             noteName = "F♯";
         } else if (keySigOffset == -6) {
@@ -318,8 +365,12 @@ MuseScore {
             keySigText = "C";
         }
         var refNote = pitchClass + 60;
+        if (refNote >= 67) {
+            refNote -= 12;
+        }
+        var oct = refNote >= 60 ? 4 : 3;
         inputReferenceNote.value = refNote;
-        return `${prefix}${keySigText} (${noteName}4=${refNote})`;
+        return `(${prefix}${keySigText}, ${noteName}${oct}=${refNote})`;
     }
 
     function formatText(textEl, isGrace) {
@@ -375,6 +426,7 @@ MuseScore {
             }
             endStaff = cursor.staffIdx;
         }
+        let refNoteSig;
         for (let staff = startStaff; staff <= endStaff; staff++) {
             for (let voice = 0; voice < 4; voice++) {
                 cursor.rewind(1);
@@ -384,6 +436,14 @@ MuseScore {
                     cursor.rewind(0); // beginning of score
 
                 while (cursor.segment && (fullScore || cursor.tick < endTick)) {
+                    if (cursor.element
+                    && (cursor.element.type == Element.CHORD
+                    || cursor.element.type == Element.REST)) {
+                        if (inputRefSigFormat.currentIndex != 2 && !refNoteSig) {
+                            refNoteSig = createRefNoteSig();
+                            cursor.add(refNoteSig);
+                        }
+                    }
                     if (cursor.element && cursor.element.type == Element.CHORD) {
                         //     let staff = cursor.element.staff
                         //     staff.staffLines = 1
@@ -453,22 +513,41 @@ MuseScore {
         }
     }
 
-    function createTextElement(note) {
+    function getNoteText(pitchClass) {
         let formats = [];
         formats.push(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]);
-        formats.push(["1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7"]);
         formats.push(["1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7"]);
-
+        formats.push(["1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7"]);
         let notation = formats[inputNotationFormat.currentIndex]
-
-        function getNoteText(pitchClass) {
-            var noteText = notation[pitchClass]
-            if ("#b".includes(noteText[0])) {
-                noteText = "<sup>" + noteText[0] + "</sup>" + noteText[1];
-            }
-            return noteText;
+        var noteText = notation[pitchClass]
+        if ("#b".includes(noteText[0])) {
+            noteText = "<sup>" + noteText[0] + "</sup>" + noteText[1];
         }
+        return noteText;
+    }
 
+    function createRefNoteSig() {
+        let el = newElement(Element.STAFF_TEXT)
+        let text = ""
+        if (inputRefSigFormat.currentIndex == 0)  {
+            text += inputNotationFormat.currentIndex == 0 ? "0=" : "1="
+            text += pcToNoteName(inputReferenceNote.value % 12, "flat")
+        } else if (inputRefSigFormat.currentIndex == 1) {
+            text += inputNotationFormat.currentIndex == 0 ? "9=" : "6="
+            text += pcToNoteName((inputReferenceNote.value + 9) % 12, "minor")
+        }
+        if (inputOctaveDots.checked) {
+            let refNote = inputReferenceNote.value
+            if (inputRefSigFormat.currentIndex == 1)
+                refNote += 9
+            let octave = Math.floor(refNote / 12) - 1;
+            text += octave
+        }
+        el.text = text
+        return el;
+    }
+
+    function createTextElement(note) {
         let el = newElement(Element.FINGERING)
 
         let relPitchClass = (note.pitch - inputReferenceNote.value + 1200) % 12;
