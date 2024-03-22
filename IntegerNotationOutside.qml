@@ -23,7 +23,7 @@ import Qt.labs.settings 1.0
 
 MuseScore {
     id: mainWindow
-    menuPath: "Plugins." + qsTr("Integer Notation")
+    menuPath: "Plugins." + qsTr("Integer Notation Outside")
     version: "0.3.0"
     description: qsTr("Add Integer Notation or Numbered Notation of the notes below the staves")
     pluginType: "dialog"
