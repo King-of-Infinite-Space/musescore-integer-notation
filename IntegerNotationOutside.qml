@@ -24,7 +24,7 @@ import Qt.labs.settings 1.0
 MuseScore {
     id: mainWindow
     menuPath: "Plugins." + qsTr("Integer Notation Outside")
-    version: "0.3.0"
+    version: "0.3.1"
     description: qsTr("Add Integer Notation or Numbered Notation of the notes below the staves")
     pluginType: "dialog"
     width: 300  // menu window size
@@ -32,7 +32,7 @@ MuseScore {
 
     Component.onCompleted: {
         if (mscoreMajorVersion >= 4) {
-            title = qsTr("Integer Notation");
+            title = qsTr("Integer Notation Outside");
         }
     }
 
