@@ -24,11 +24,11 @@ import Qt.labs.settings 1.0
 MuseScore {
     id: mainWindow
     menuPath: "Plugins." + qsTr("Integer Notation Inside")
-    version: "0.4.0"
+    version: "0.4.1"
     description: qsTr("Replace noteheads with Integer Notation or Numbered Notation")
     pluginType: "dialog"
     width: 320  // menu window size
-    height: 460
+    height: 540
 
     Component.onCompleted: {
         if (mscoreMajorVersion >= 4) {
@@ -133,13 +133,25 @@ MuseScore {
         }
         RowLayout {
             Label {
+                text: "Set stem direction up"
+                Layout.fillWidth: true
+            }
+            CheckBox {
+                id: inputStemUp
+                text: ""
+                checked: true
+                Layout.alignment: Qt.AlignRight
+            }
+        }
+        RowLayout {
+            Label {
                 text: "Re-position notes vertically"
                 Layout.fillWidth: true
             }
             CheckBox {
                 id: inputReposition
                 text: ""
-                checked: true
+                checked: false
                 Layout.alignment: Qt.AlignRight
             }
         }
@@ -158,9 +170,57 @@ MuseScore {
             height: 2
             color: "transparent"
         }
+
         RowLayout {
             Label {
-                text: "Method to hide"
+                text: "Text size"
+                Layout.fillWidth: true
+            }
+            SpinBox {
+                id: inputFontSize
+                implicitWidth: 55
+                decimals: 1
+                minimumValue: 5
+                maximumValue: 15
+                value: 9.5
+                stepSize: 0.5
+                Layout.alignment: Qt.AlignRight
+            }
+        }
+
+        RowLayout {
+            Label {
+                text: "Text color (RGB value)"
+                Layout.fillWidth: true
+            }
+            TextField {
+                id: inputTextColor
+                text: "#000000"
+                Layout.preferredWidth: 60
+                Layout.alignment: Qt.AlignRight
+            }
+        }
+
+        RowLayout {
+            Label {
+                text: "X offset"
+                Layout.fillWidth: true
+            }
+            SpinBox {
+                id: inputXOffset
+                implicitWidth: 55
+                decimals: 1
+                minimumValue: -5
+                maximumValue: 5
+                value: 1
+                stepSize: 0.1
+                Layout.alignment: Qt.AlignRight
+            }
+        }
+
+        RowLayout {
+            Label {
+                text: "Method to hide notehead"
                 Layout.fillWidth: true
             }
             ComboBox {
@@ -179,6 +239,7 @@ MuseScore {
                 Layout.alignment: Qt.AlignRight
             }
         }
+
         RowLayout {
             Label {
                 text: "Notehead color (RGB value)"
@@ -190,34 +251,6 @@ MuseScore {
                 Layout.preferredWidth: 60
                 Layout.alignment: Qt.AlignRight
                 enabled: (inputHideMethod.currentText == "color")
-            }
-        }
-        RowLayout {
-            Label {
-                text: "X offset"
-                Layout.fillWidth: true
-            }
-            SpinBox {
-                id: inputXOffset
-                implicitWidth: 55
-                decimals: 1
-                minimumValue: -5
-                maximumValue: 5
-                value: 1
-                stepSize: 0.1
-                Layout.alignment: Qt.AlignRight
-            }
-        }
-        RowLayout {
-            Label {
-                text: "Text color (RGB value)"
-                Layout.fillWidth: true
-            }
-            TextField {
-                id: inputTextColor
-                text: "#000000"
-                Layout.preferredWidth: 60
-                Layout.alignment: Qt.AlignRight
             }
         }
 
@@ -382,7 +415,7 @@ MuseScore {
             textEl.align = Align.RIGHT + Align.VCENTER;
             // text alignment horizontally and vertically
             textEl.fontFace = fontFamily;
-            textEl.fontSize = 9
+            textEl.fontSize = inputFontSize.value
             textEl.color = inputTextColor.text
             textEl.offsetX = inputXOffset.value
             textEl.offsetY = 0
@@ -506,6 +539,8 @@ MuseScore {
                 note.fixed = true
                 note.fixedLine = 1 + 3*(notes.length - 1 - i)
                 // i=0 is lowest note, line 1 is top space
+            }
+            if (inputStemUp.checked) {
                 note.stemDirection = 1
                 // stem up (to the right of notes)
                 // prevent occlusion of octave dots (to the left of notes)
