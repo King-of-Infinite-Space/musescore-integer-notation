@@ -1,5 +1,5 @@
 //==============================================
-//  Integer Notation & Numbered Notation plugin for MuseScore v4
+//  Integer Notation & Numbered Notation plugin for MuseScore4
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,32 +15,20 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //==============================================
 
-import QtQuick 2.9
-import QtQuick.Controls 1.5
-import QtQuick.Layouts 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import MuseScore 3.0
-import Qt.labs.settings 1.0
+
 
 MuseScore {
-    id: mainWindow
+    version: "0.5.0"
+    title: qsTr("Integer Notation Inside")
     menuPath: "Plugins." + qsTr("Integer Notation Inside")
-    version: "0.4.1"
     description: qsTr("Replace noteheads with Integer Notation or Numbered Notation")
     pluginType: "dialog"
     width: 320  // menu window size
-    height: 540
-
-    Component.onCompleted: {
-        if (mscoreMajorVersion >= 4) {
-            title = qsTr("Integer Notation Inside");
-        }
-    }
-
-    ExclusiveGroup {
-        id: exclusiveGroupKey
-    }
-
-    property var fontFamily: "Arial Narrow"
+    height: 600
 
     ColumnLayout {
         id: column1
@@ -77,16 +65,16 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "Reference Note (MIDI num C4=60)"
+                text: "Reference Note (MIDI C4=60)"
                 Layout.fillWidth: true
             }
             SpinBox {
                 id: inputReferenceNote
-                implicitWidth: 55
-                decimals: 0
-                minimumValue: 0
-                maximumValue: 127
+                from: 0
+                to: 127
+                stepSize: 1
                 value: 60
+                Layout.preferredWidth: 60
                 Layout.alignment: Qt.AlignRight
             }
         }
@@ -108,15 +96,27 @@ MuseScore {
                 currentIndex: 0
                 model: ListModel {
                     ListElement {
-                        text: "1st degree (0=X / 1=X)"
+                        text: "1st degree"
                     }
                     ListElement {
-                        text: "6th degree (9=X / 6=X)"
+                        text: "6th degree"
                     }
                     ListElement {
                         text: "None"
                     }
                 }
+            }
+        }
+        RowLayout {
+            Label {
+                text: "Reference note follows key change"
+                Layout.fillWidth: true
+            }
+            CheckBox {
+                id: inputFollowKeyChange
+                text: ""
+                checked: true
+                Layout.alignment: Qt.AlignRight
             }
         }
         RowLayout {
@@ -148,11 +148,11 @@ MuseScore {
                 text: "Re-position notes vertically"
                 Layout.fillWidth: true
             }
-            CheckBox {
+            ComboBox {
                 id: inputReposition
-                text: ""
-                checked: false
+                model: ["None", "Top align", "Bottom align"]
                 Layout.alignment: Qt.AlignRight
+                Layout.preferredWidth: 100
             }
         }
         Rectangle {
@@ -176,14 +176,25 @@ MuseScore {
                 text: "Text size"
                 Layout.fillWidth: true
             }
-            SpinBox {
+            TextField {
                 id: inputFontSize
-                implicitWidth: 55
-                decimals: 1
-                minimumValue: 5
-                maximumValue: 15
-                value: 9.5
-                stepSize: 0.5
+                text: "9.5"
+                selectByMouse: true
+                Layout.preferredWidth: 60
+                Layout.alignment: Qt.AlignRight
+            }
+        }
+
+        RowLayout {
+            Label {
+                text: "Text font"
+                Layout.fillWidth: true
+            }
+            TextField {
+                id: inputFontFace
+                text: "Arial Narrow"
+                selectByMouse: true
+                Layout.preferredWidth: 100
                 Layout.alignment: Qt.AlignRight
             }
         }
@@ -196,6 +207,7 @@ MuseScore {
             TextField {
                 id: inputTextColor
                 text: "#000000"
+                selectByMouse: true
                 Layout.preferredWidth: 60
                 Layout.alignment: Qt.AlignRight
             }
@@ -206,14 +218,11 @@ MuseScore {
                 text: "X offset"
                 Layout.fillWidth: true
             }
-            SpinBox {
+            TextField {
                 id: inputXOffset
-                implicitWidth: 55
-                decimals: 1
-                minimumValue: -5
-                maximumValue: 5
-                value: 1
-                stepSize: 0.1
+                text: "1"
+                selectByMouse: true
+                Layout.preferredWidth: 60
                 Layout.alignment: Qt.AlignRight
             }
         }
@@ -248,6 +257,7 @@ MuseScore {
             TextField {
                 id: inputColor
                 text: "#f9f9f9"
+                selectByMouse: true
                 Layout.preferredWidth: 60
                 Layout.alignment: Qt.AlignRight
                 enabled: (inputHideMethod.currentText == "color")
@@ -260,68 +270,65 @@ MuseScore {
                 Layout.fillWidth: true
             }
             ComboBox {
+                id: inputStyleGroup
                 currentIndex: 0
+                textRole: "text"
                 model: ListModel {
-                    id: inputStyle
-                    property var key
                     ListElement {
                         text: "Custom-11"
-                        pName: -1
+                        value: -1
                     }
                     ListElement {
                         text: "User-1"
-                        pName: 49
+                        value: 49
                     }
                     ListElement {
                         text: "User-2"
-                        pName: 50
+                        value: 50
                     }
                     ListElement {
                         text: "User-3"
-                        pName: 51
+                        value: 51
                     }
                     ListElement {
                         text: "User-4"
-                        pName: 52
+                        value: 52
                     }
                     ListElement {
                         text: "User-5"
-                        pName: 53
+                        value: 53
                     }
                     ListElement {
                         text: "User-6"
-                        pName: 54
+                        value: 54
                     }
                     ListElement {
                         text: "User-7"
-                        pName: 55
+                        value: 60
                     }
                     ListElement {
                         text: "User-8"
-                        pName: 56
+                        value: 56
                     }
                     ListElement {
                         text: "User-9"
-                        pName: 57
+                        value: 57
                     }
                     ListElement {
                         text: "User-10"
-                        pName: 58
+                        value: 58
                     }
                     ListElement {
                         text: "User-11"
-                        pName: 59
+                        value: 59
                     }
                     ListElement {
                         text: "User-12"
-                        pName: 60
+                        value: 60
                     }
                 }
                 Layout.preferredWidth: 100
                 Layout.alignment: Qt.AlignRight
-                onCurrentIndexChanged: {
-                    inputStyle.key = inputStyle.get(currentIndex).pName;
-                }
             }
         }
 
@@ -362,72 +369,66 @@ MuseScore {
         var noteNamesFormats = {
             "flat": ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"],
             "sharp": ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"],
-            "minor": ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"]
         }
         return noteNamesFormats[format][pc];
+    }
+
+    function keySigToPitchClass(keySig) {
+        var offsetToClass = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5];
+        var keyIndex = keySig;
+        if (keyIndex < 0)
+            keyIndex += 12;
+        return offsetToClass[keyIndex];
     }
 
     function findKeySignature() {
         var c = curScore.newCursor();
         // c.inputStateMode = Cursor.INPUT_STATE_SYNC_WITH_SCORE;
         var keySigOffset = c.keySignature;
-        var prefix = "Initial key ";
+        var prefix = "  Initial key ";
         if (isNaN(keySigOffset)) {
             return prefix + "unknown";
         }
-        var offsetToClass = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5];
-        
-        var keyIndex = keySigOffset;
-        if (keyIndex < 0)
-            keyIndex += 12;
-        var pitchClass = offsetToClass[keyIndex];
-        var noteName = pcToNoteName(pitchClass, "flat");
-        if (keySigOffset == 6) {
-            noteName = "F♯";
-        } else if (keySigOffset == -6) {
-            noteName = "G♭";
-        }
-        var keySigText = "";
+        var pitchClass = keySigToPitchClass(keySigOffset);
+        var noteName = pcToNoteName(pitchClass, keySigOffset >= 0 ? "sharp" : "flat");
+
+        var keySigText = noteName;
         if (keySigOffset > 0) {
-            keySigText = "♯".repeat(keySigOffset);
-            keySigText += "/" + noteName;
+            keySigText += " (" + "♯".repeat(keySigOffset) + ")";
         } else if (keySigOffset < 0) {
-            keySigText = "♭".repeat(-keySigOffset);
-            keySigText += "/" + noteName;
-        } else {
-            keySigText = "C";
+            keySigText += " (" + "♭".repeat(-keySigOffset) + ")";
         }
         var refNote = pitchClass + 60;
         if (refNote >= 67) {
             refNote -= 12;
         }
-        var oct = refNote >= 60 ? 4 : 3;
+        var oct = refNote % 12 - 1;
         inputReferenceNote.value = refNote;
-        return `(${prefix}${keySigText}, ${noteName}${oct}=${refNote})`;
+        return `${prefix}${keySigText}, ${noteName}${oct}=${refNote}`;
     }
 
     function formatText(textEl, isGrace) {
-        if (inputStyle.key == -1) {
+        if (inputStyleGroup.currentIndex == 0) {
             // 60 = User-12
             textEl.subStyle = 59
             textEl.autoplace = false;
             // automatically place the text to prevent overlapping with other elements
             textEl.align = Align.RIGHT + Align.VCENTER;
             // text alignment horizontally and vertically
-            textEl.fontFace = fontFamily;
-            textEl.fontSize = inputFontSize.value
+            textEl.fontFace = inputFontFace.text
+            textEl.fontSize = parseFloat(inputFontSize.text)
             textEl.color = inputTextColor.text
-            textEl.offsetX = inputXOffset.value
+            textEl.offsetX = parseFloat(inputXOffset.text)
             textEl.offsetY = 0
-            if (inputReposition.checked) {
+            if (inputReposition.currentText !== "None") {
                 textEl.align = Align.RIGHT + Align.BASELINE;
                 textEl.offsetY = 0.5
             }
         } else {
-            textEl.subStyle = inputStyle.key;
+            textEl.subStyle = inputStyleGroup.valueAt(inputStyleGroup.currentIndex);
         }
         if (isGrace) {
-            textEl.fontSize = 7
+            textEl.fontSize = textEl.fontSize - 2
         }
     }
 
@@ -459,7 +460,9 @@ MuseScore {
             }
             endStaff = cursor.staffIdx;
         }
-        let refNoteSig;
+        let initialKeySig = cursor.keySignature;
+        let prevKeySig;
+        let currKeySig;
         for (let staff = startStaff; staff <= endStaff; staff++) {
             for (let voice = 0; voice < 4; voice++) {
                 cursor.rewind(1);
@@ -472,9 +475,15 @@ MuseScore {
                     if (cursor.element
                     && (cursor.element.type == Element.CHORD
                     || cursor.element.type == Element.REST)) {
-                        if (inputRefSigFormat.currentIndex != 2 && !refNoteSig) {
-                            refNoteSig = createRefNoteSig();
-                            cursor.add(refNoteSig);
+                        currKeySig = cursor.keySignature
+                        if (prevKeySig !== currKeySig) {
+                            if (inputRefSigFormat.currentIndex !== 2 && voice === 0 && staff === 0) {
+                                // add key signature text
+                                if (inputFollowKeyChange.checked || prevKeySig === undefined) {
+                                    cursor.add(createRefNoteSigText(initialKeySig, currKeySig));
+                                }
+                            }
+                            prevKeySig = currKeySig
                         }
                     }
                     if (cursor.element && cursor.element.type == Element.CHORD) {
@@ -487,9 +496,9 @@ MuseScore {
                         
                         let graceChords = cursor.element.graceNotes
                         for (var i = 0; i < graceChords.length; i++) {
-                            transformNotes(graceChords[i].notes, true)
+                            transformNotes(graceChords[i].notes, true, initialKeySig, currKeySig)
                         }
-                        transformNotes(cursor.element.notes, false)
+                        transformNotes(cursor.element.notes, false, initialKeySig, currKeySig)
                     }
                     cursor.next();
                 } // end while
@@ -497,14 +506,14 @@ MuseScore {
         } // end for staff
     } // end function
 
-    function transformNotes(notes, isGrace) {
+    function transformNotes(notes, isGrace, initialKeySig, currentKeySig) {
         // const invisibleColor = rgbToHex([240,240,240]) // f0f0f0
         // const invisibleColor = "#f3f3f3"
         // const invisibleColor = "#f9f9f9" // 249, page background color
         const invisibleColor = inputColor.text
         for (let i = 0; i < notes.length; i++) {
             let note = notes[i]
-            let textEl = createTextElement(note);
+            let textEl = createTextElement(note, initialKeySig, currentKeySig);
             formatText(textEl, isGrace);
             if (note.durationType.type == 3) {
                 // half note
@@ -535,10 +544,14 @@ MuseScore {
                     note.accidental.visible = false
                 }
             }
-            if (inputReposition.checked) {
+            if (inputReposition.currentText == "Top align") {
                 note.fixed = true
                 note.fixedLine = 1 + 3*(notes.length - 1 - i)
                 // i=0 is lowest note, line 1 is top space
+            } else if (inputReposition.currentText == "Bottom align") {
+                note.fixed = true
+                note.fixedLine = 7 - 3*i
+                // line 7 is bottom space
             }
             if (inputStemUp.checked) {
                 note.stemDirection = 1
@@ -561,18 +574,24 @@ MuseScore {
         return noteText;
     }
 
-    function createRefNoteSig() {
+    function createRefNoteSigText(initialKeySig, currKeySig) {
         let el = newElement(Element.STAFF_TEXT)
         let text = ""
+        let pc1 = keySigToPitchClass(initialKeySig)
+        let pc2 = keySigToPitchClass(currKeySig)
+        let offset =  inputFollowKeyChange.checked ? (pc2 + 12 - pc1) % 12 : 0
+        if (offset > 6) {
+            offset -= 12
+        }
         if (inputRefSigFormat.currentIndex == 0)  {
             text += inputNotationFormat.currentIndex == 0 ? "0=" : "1="
-            text += pcToNoteName(inputReferenceNote.value % 12, "flat")
+            text += pcToNoteName((inputReferenceNote.value + offset) % 12, currKeySig >= 0 ? "sharp" : "flat")
         } else if (inputRefSigFormat.currentIndex == 1) {
             text += inputNotationFormat.currentIndex == 0 ? "9=" : "6="
-            text += pcToNoteName((inputReferenceNote.value + 9) % 12, "minor")
+            text += pcToNoteName((inputReferenceNote.value + 9 + offset) % 12, currKeySig >= 0 ? "sharp" : "flat")
         }
         if (inputOctaveDots.checked) {
-            let refNote = inputReferenceNote.value
+            let refNote = inputReferenceNote.value + offset
             if (inputRefSigFormat.currentIndex == 1)
                 refNote += 9
             let octave = Math.floor(refNote / 12) - 1;
@@ -582,11 +601,19 @@ MuseScore {
         return el;
     }
 
-    function createTextElement(note) {
+    function createTextElement(note, initialKeySig, currKeySig) {
+        let pc1 = keySigToPitchClass(initialKeySig)
+        let pc2 = keySigToPitchClass(currKeySig)
+        let offset = (pc2 + 12 - pc1) % 12
+        if (offset > 6) {
+            offset -= 12
+        }
+        let refNote = inputReferenceNote.value + offset
+
         let el = newElement(Element.FINGERING)
 
-        let relPitchClass = (note.pitch - inputReferenceNote.value + 1200) % 12;
-        let relativeOctave = Math.floor((note.pitch - inputReferenceNote.value) / 12);
+        let relPitchClass = (note.pitch - refNote + 1200) % 12;
+        let relativeOctave = Math.floor((note.pitch - refNote) / 12);
         let dot = "•";
         let text = "";
         if (relativeOctave > 0 && inputOctaveDots.checked)
