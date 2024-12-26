@@ -521,6 +521,9 @@ MuseScore {
                 // textEl.framePadding = 0.1
                 textEl.fontStyle = 2 // italic
             }
+            if (!note.visible) {
+                textEl.visible = false
+            }
             note.add(textEl);
             if (inputHideMethod.currentIndex == 0) {
                 // color
