@@ -23,9 +23,9 @@ import MuseScore 3.0
 
 MuseScore {
     version: "0.5.0"
-    title: qsTr("Integer Notation Inside")
-    menuPath: "Plugins." + qsTr("Integer Notation Inside")
-    description: qsTr("Replace noteheads with Integer Notation or Numbered Notation")
+    title: qsTr("{{ plugin_title }}")
+    menuPath: "Plugins." + qsTr("{{ menu_path }}")
+    description: qsTr("{{ plugin_description }}")
     pluginType: "dialog"
     width: 320  // menu window size
     height: 600
@@ -41,7 +41,7 @@ MuseScore {
             id: rowFormat
             width: parent.width
             Label {
-                text: "Notation format"
+                text: "{{ notation_format_label }}"
                 Layout.fillWidth: true
             }
             ComboBox {
@@ -65,7 +65,7 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "Reference Note (MIDI C4=60)"
+                text: "{{ reference_note_label }}"
                 Layout.fillWidth: true
             }
             SpinBox {
@@ -86,7 +86,7 @@ MuseScore {
         }
         RowLayout {
             Label {
-                text: "Reference note signature"
+                text: "{{ reference_note_signature_label }}"
                 Layout.fillWidth: true
             }
             ComboBox {
@@ -96,20 +96,20 @@ MuseScore {
                 currentIndex: 0
                 model: ListModel {
                     ListElement {
-                        text: "1st degree"
+                        text: "{{ signature_option_1st_degree }}"
                     }
                     ListElement {
-                        text: "6th degree"
+                        text: "{{ signature_option_6th_degree }}"
                     }
                     ListElement {
-                        text: "None"
+                        text: "{{ signature_option_none }}"
                     }
                 }
             }
         }
         RowLayout {
             Label {
-                text: "Reference note follows key change"
+                text: "{{ reference_note_follows_key_change_label }}"
                 Layout.fillWidth: true
             }
             CheckBox {
@@ -121,7 +121,7 @@ MuseScore {
         }
         RowLayout {
             Label {
-                text: "Show octave dots (like Jianpu)"
+                text: "{{ show_octave_dots_label }}"
                 Layout.fillWidth: true
             }
             CheckBox {
@@ -133,7 +133,7 @@ MuseScore {
         }
         RowLayout {
             Label {
-                text: "Set stem direction up"
+                text: "{{ set_stem_direction_up_label }}"
                 Layout.fillWidth: true
             }
             CheckBox {
@@ -145,12 +145,12 @@ MuseScore {
         }
         RowLayout {
             Label {
-                text: "Re-position notes vertically"
+                text: "{{ reposition_notes_vertically_label }}"
                 Layout.fillWidth: true
             }
             ComboBox {
                 id: inputReposition
-                model: ["None", "Top align", "Bottom align"]
+                model: ["{{ reposition_option_none }}", "{{ reposition_option_top_align }}", "{{ reposition_option_bottom_align }}"]
                 Layout.alignment: Qt.AlignRight
                 Layout.preferredWidth: 100
             }
@@ -173,7 +173,7 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "Text size"
+                text: "{{ text_size_label }}"
                 Layout.fillWidth: true
             }
             TextField {
@@ -187,7 +187,7 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "Text font"
+                text: "{{ text_font_label }}"
                 Layout.fillWidth: true
             }
             TextField {
@@ -201,7 +201,7 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "Text color (RGB value)"
+                text: "{{ text_color_label }}"
                 Layout.fillWidth: true
             }
             TextField {
@@ -215,7 +215,7 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "X offset"
+                text: "{{ x_offset_label }}"
                 Layout.fillWidth: true
             }
             TextField {
@@ -229,7 +229,7 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "Method to hide notehead"
+                text: "{{ hide_notehead_method_label }}"
                 Layout.fillWidth: true
             }
             ComboBox {
@@ -238,10 +238,10 @@ MuseScore {
                 model: ListModel {
                     property var key
                     ListElement {
-                        text: "color"
+                        text: "{{ hide_method_color }}"
                     }
                     ListElement {
-                        text: "visibility"
+                        text: "{{ hide_method_visibility }}"
                     }
                 }
                 Layout.preferredWidth: 100
@@ -251,7 +251,7 @@ MuseScore {
 
         RowLayout {
             Label {
-                text: "Notehead color (RGB value)"
+                text: "{{ notehead_color_label }}"
                 Layout.fillWidth: true
             }
             TextField {
@@ -260,13 +260,13 @@ MuseScore {
                 selectByMouse: true
                 Layout.preferredWidth: 60
                 Layout.alignment: Qt.AlignRight
-                enabled: (inputHideMethod.currentText == "color")
+                enabled: (inputHideMethod.currentIndex == 0)
             }
         }
 
         RowLayout {
             Label {
-                text: "Text style"
+                text: "{{ text_style_label }}"
                 Layout.fillWidth: true
             }
             ComboBox {
@@ -275,55 +275,55 @@ MuseScore {
                 textRole: "text"
                 model: ListModel {
                     ListElement {
-                        text: "Custom-11"
+                        text: "{{ text_style_custom_11 }}"
                         value: -1
                     }
                     ListElement {
-                        text: "User-1"
+                        text: "{{ text_style_user_1 }}"
                         value: 49
                     }
                     ListElement {
-                        text: "User-2"
+                        text: "{{ text_style_user_2 }}"
                         value: 50
                     }
                     ListElement {
-                        text: "User-3"
+                        text: "{{ text_style_user_3 }}"
                         value: 51
                     }
                     ListElement {
-                        text: "User-4"
+                        text: "{{ text_style_user_4 }}"
                         value: 52
                     }
                     ListElement {
-                        text: "User-5"
+                        text: "{{ text_style_user_5 }}"
                         value: 53
                     }
                     ListElement {
-                        text: "User-6"
+                        text: "{{ text_style_user_6 }}"
                         value: 54
                     }
                     ListElement {
-                        text: "User-7"
+                        text: "{{ text_style_user_7 }}"
                         value: 60
                     }
                     ListElement {
-                        text: "User-8"
+                        text: "{{ text_style_user_8 }}"
                         value: 56
                     }
                     ListElement {
-                        text: "User-9"
+                        text: "{{ text_style_user_9 }}"
                         value: 57
                     }
                     ListElement {
-                        text: "User-10"
+                        text: "{{ text_style_user_10 }}"
                         value: 58
                     }
                     ListElement {
-                        text: "User-11"
+                        text: "{{ text_style_user_11 }}"
                         value: 59
                     }
                     ListElement {
-                        text: "User-12"
+                        text: "{{ text_style_user_12 }}"
                         value: 60
                     }
                 }
@@ -341,7 +341,7 @@ MuseScore {
             Button {
                 Layout.alignment: Qt.AlignRight
                 Layout.preferredWidth: 80
-                text: "Cancel"
+                text: "{{ cancel_button_label }}"
                 onClicked: {
                     quit();
                 }
@@ -349,7 +349,7 @@ MuseScore {
             Button {
                 Layout.alignment: Qt.AlignRight
                 Layout.preferredWidth: 80
-                text: "Ok"
+                text: "{{ ok_button_label }}"
                 onClicked: {
                     curScore.startCmd();
                     main();
@@ -385,9 +385,9 @@ MuseScore {
         var c = curScore.newCursor();
         // c.inputStateMode = Cursor.INPUT_STATE_SYNC_WITH_SCORE;
         var keySigOffset = c.keySignature;
-        var prefix = "  Initial key ";
+        var prefix = "{{inital_key}}";
         if (isNaN(keySigOffset)) {
-            return prefix + "unknown";
+            return prefix + "{{unknown}}";
         }
         var pitchClass = keySigToPitchClass(keySigOffset);
         var noteName = pcToNoteName(pitchClass, keySigOffset >= 0 ? "sharp" : "flat");
@@ -420,7 +420,7 @@ MuseScore {
             textEl.color = inputTextColor.text
             textEl.offsetX = parseFloat(inputXOffset.text)
             textEl.offsetY = 0
-            if (inputReposition.currentText !== "None") {
+            if (inputReposition.currentIndex != 0) {
                 textEl.align = Align.RIGHT + Align.BASELINE;
                 textEl.offsetY = 0.5
             }
@@ -522,12 +522,14 @@ MuseScore {
                 textEl.fontStyle = 2 // italic
             }
             note.add(textEl);
-            if (inputHideMethod.currentText == "color") {
+            if (inputHideMethod.currentIndex == 0) {
+                // color
                 note.color = invisibleColor
                 // note.headGroup = 18 // rectangle
                 note.headGroup = 20 // rhombus
             }
-            if (inputHideMethod.currentText == "visibility") {
+            if (inputHideMethod.currentIndex == 1) {
+                // visibility
                 note.visible = false
                 // if hide notehead, some numbers will collapse together
                 // (notes on adjacent staff line and space)
@@ -536,19 +538,21 @@ MuseScore {
             // note.noStem = true
 
             if (note.accidental) {
-                if (inputHideMethod.currentText == "color") {
+                if (inputHideMethod.currentIndex == 0) {
                     note.accidental.color = invisibleColor
                     note.accidental.small = true
                 }
-                if (inputHideMethod.currentText == "visibility") {
+                if (inputHideMethod.currentIndex == 1) {
                     note.accidental.visible = false
                 }
             }
-            if (inputReposition.currentText == "Top align") {
+            if (inputReposition.currentIndex == 1) {
+                // top align
                 note.fixed = true
                 note.fixedLine = 1 + 3*(notes.length - 1 - i)
                 // i=0 is lowest note, line 1 is top space
-            } else if (inputReposition.currentText == "Bottom align") {
+            } else if (inputReposition.currentIndex == 2) {
+                // bottom align
                 note.fixed = true
                 note.fixedLine = 7 - 3*i
                 // line 7 is bottom space

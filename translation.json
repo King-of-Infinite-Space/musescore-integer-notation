@@ -1,0 +1,63 @@
+{
+  "plugin_title": ["Integer Notation", "整数记谱法"],
+  "menu_path": ["Integer Notation", "整数记谱法"],
+  "plugin_description": [
+    "Replace noteheads with Integer Notation or Numbered Notation",
+    "将符头替换为整数记法或简谱记法"
+  ],
+  "notation_format_label": ["Notation format", "记谱格式"],
+  "reference_note_label": [
+    "Reference Note (MIDI C4=60)",
+    "参考音 (MIDI C4=60)"
+  ],
+  "reference_note_signature_label": [
+    "Reference note signature",
+    "参考音的调号"
+  ],
+  "signature_option_1st_degree": ["1st degree", "第一级"],
+  "signature_option_6th_degree": ["6th degree", "第六级"],
+  "signature_option_none": ["None", "无"],
+  "reference_note_follows_key_change_label": [
+    "Reference note follows key change",
+    "参考音随调号变化"
+  ],
+  "show_octave_dots_label": [
+    "Show octave dots (like Jianpu)",
+    "用点号表示八度 (类似简谱)"
+  ],
+  "set_stem_direction_up_label": ["Set stem direction up", "设定符干向上"],
+  "reposition_notes_vertically_label": [
+    "Re-position notes vertically",
+    "纵向重新排列音符"
+  ],
+  "reposition_option_none": ["None", "无"],
+  "reposition_option_top_align": ["Top align", "顶部对齐"],
+  "reposition_option_bottom_align": ["Bottom align", "底部对齐"],
+  "text_size_label": ["Text size", "文字大小"],
+  "text_font_label": ["Text font", "文字字体"],
+  "text_color_label": ["Text color (RGB value)", "文字颜色 (RGB值)"],
+  "x_offset_label": ["X offset", "X偏移"],
+  "hide_notehead_method_label": ["Method to hide notehead", "隐藏符头方法"],
+  "hide_method_color": ["color", "颜色"],
+  "hide_method_visibility": ["visibility", "可见性"],
+  "notehead_color_label": ["Notehead color (RGB value)", "符头颜色 (RGB值)"],
+  "text_style_label": ["Text style", "文字样式"],
+  "text_style_custom_11": ["Custom (User-11)", "自定义 (用户-11)"],
+  "text_style_user_1": ["User-1", "用户-1"],
+  "text_style_user_2": ["User-2", "用户-2"],
+  "text_style_user_3": ["User-3", "用户-3"],
+  "text_style_user_4": ["User-4", "用户-4"],
+  "text_style_user_5": ["User-5", "用户-5"],
+  "text_style_user_6": ["User-6", "用户-6"],
+  "text_style_user_7": ["User-7", "用户-7"],
+  "text_style_user_8": ["User-8", "用户-8"],
+  "text_style_user_9": ["User-9", "用户-9"],
+  "text_style_user_10": ["User-10", "用户-10"],
+  "text_style_user_11": ["User-11", "用户-11"],
+  "text_style_user_12": ["User-12", "用户-12"],
+  "cancel_button_label": ["Cancel", "取消"],
+  "ok_button_label": ["Ok", "确定"],
+
+  "inital_key": ["  Initial Key ", "  初始调号 "],
+  "unknown": ["unknown", "未知"]
+}
