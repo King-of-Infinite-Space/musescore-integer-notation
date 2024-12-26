@@ -356,6 +356,7 @@ MuseScore {
                     curScore.endCmd();
                     quit();
                 }
+                highlighted: true
             }
         }
     }
