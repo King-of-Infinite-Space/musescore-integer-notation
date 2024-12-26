@@ -139,7 +139,7 @@ MuseScore {
             CheckBox {
                 id: inputStemUp
                 text: ""
-                checked: true
+                checked: false
                 Layout.alignment: Qt.AlignRight
             }
         }
