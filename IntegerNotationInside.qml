@@ -529,8 +529,8 @@ MuseScore {
             if (inputHideMethod.currentIndex == 0) {
                 // color
                 note.color = invisibleColor
-                // note.headGroup = 18 // rectangle
-                note.headGroup = 20 // rhombus
+                note.z = 1000
+                // notehead (white) under the stem (around 1800)
             }
             if (inputHideMethod.currentIndex == 1) {
                 // visibility
