@@ -3,10 +3,10 @@ import json
 
 
 def translate_qml(template_file, translations_file, langs=("en", "zh")):
-    with open(template_file, "r") as file:
+    with open(template_file, "r", encoding='utf-8') as file:
         template_content = file.read()
 
-    with open(translations_file, "r") as file:
+    with open(translations_file, "r", encoding='utf-8') as file:
         translations = json.load(file)
 
     template = Template(template_content)
@@ -16,7 +16,7 @@ def translate_qml(template_file, translations_file, langs=("en", "zh")):
         assert "{{" not in content
         # make sure all variables are replaced
         output_path = f"dist/{template_file.split('.')[0]}_{lang}.qml"
-        with open(output_path, "w") as file:
+        with open(output_path, "w", encoding='utf-8') as file:
             file.write(content)
 
 
