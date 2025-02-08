@@ -133,11 +133,11 @@ MuseScore {
         }
         RowLayout {
             Label {
-                text: "{{ set_stem_direction_up_label }}"
+                text: "{{ set_notehead_left_label }}"
                 Layout.fillWidth: true
             }
             CheckBox {
-                id: inputStemUp
+                id: inputNoteheadLeft
                 text: ""
                 checked: false
                 Layout.alignment: Qt.AlignRight
@@ -576,10 +576,16 @@ MuseScore {
                 note.fixedLine = 7 - 3*i
                 // line 7 is bottom space
             }
-            if (inputStemUp.checked) {
-                note.stemDirection = 1
-                // stem up (to the right of notes)
-                // prevent occlusion of octave dots (to the left of notes)
+            if (inputNoteheadLeft.checked) {
+                note.mirrorHead = 1
+                // 0 auto, 1 left, 2 right
+                // set note head to the left of the stem
+                // to prevent octave dots (to the left of notes) overlapping with stems
+                // downside is that stems in different directions are not vertically aligned (noteheads are)
+                // also notes on adjacent lines and spaces (e.g. seconds) overlap
+
+                // alternative is to set all stems up (so they are to the right of notes)
+                // but stem directions differentiate voices
             }
         }
     }

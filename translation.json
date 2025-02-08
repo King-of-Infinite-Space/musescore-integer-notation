@@ -25,7 +25,7 @@
     "Show octave dots (like Jianpu)",
     "用点号表示八度 (类似简谱)"
   ],
-  "set_stem_direction_up_label": ["Set stem direction up", "设定符干向上"],
+  "set_notehead_left_label": ["Set noteheads to the left of stems", "符头总在符干左侧"],
   "reposition_notes_vertically_label": [
     "Re-position notes vertically",
     "纵向重新排列音符"
