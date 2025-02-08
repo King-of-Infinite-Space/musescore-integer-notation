@@ -51,17 +51,17 @@ On Insider version, to distinguish between quarter notes and half notes after no
 
 #### Why use pitch class | 为什么使用音高集合
 
-"Pitch class" represents twelve notes in an octave by numbers 0-11. This notation is intuitive and straighforward because people already know how to do arithmetic and how to read the clock face. Intervals are simply differences between numbers. For example, if the tonic is 0, then the major scale is 0, 2, 4, 5, 7, 9, 11.   
+"Pitch class" represents twelve notes in an octave by numbers 0-11. This notation is intuitive and straightforward because people already know how to do arithmetic and how to read the clock face. Intervals are simply differences between numbers. For example, if the tonic is 0, then the major scale is 0, 2, 4, 5, 7, 9, 11.   
 “音高集合”用数字0-11表示八度里的12个音。这种形式简单直观，因为人们本来已经会做算术以及读钟表。数字之差就是音程。例如，如果主音是0，那么大调音阶就是0、2、4、5、7、9、11。
 
 
-#### Some detail on implementation | 一些实现细节
+#### Implementation details | 实现细节
 
-Insider version hides noteheads by either (1) setting their colors to background color or (2) setting their visibility to false. Option 1 is recommended because the notes remain selectable, but the noteheads have tiny overlaps with stems. Option 2 doesn't have this overlap but the numbers on adjacent line and space overlap. Also the notes are not selectable unless "Show Invisible" is on (Click empty space on the score > Properties main panel).   
-内部版有两种方式隐藏符头：(1) 将颜色改为背景颜色 (2) 设为不可见。更推荐选项(1)，因为音符仍可选中，但符头和符干有微小重叠。选项2不会出现这种重叠，但是相邻线和间上的数字会重叠。而且音符不可选中，除非打开了“不可见元素”（点击乐谱空白 > 属性主面板）。
+Insider version hides noteheads by either (1) setting their colors to background color or (2) setting their visibility to false. Option 1 is recommended because the notes remain selectable (by clicking to the side of numbers). Option 2 causes overlap of numbers on adjacent line and space, and notes are not selectable (Unless "Show Invisible" is on. Click empty space on the score > Properties main panel).   
+内部版有两种方式隐藏符头：(1) 将颜色改为背景颜色 (2) 设为不可见。更推荐选项(1)，因为音符仍可选中（点击数字外侧）。选项2使得相邻线和间上的数字重叠，且音符不可选中（除非打开了“不可见元素”：点击乐谱空白 > 属性主面板）。
 
-Outside version adds texts as "staff text" with subtype "User-12" and extra styles. Inside version adds texts as "fingering" with subtype "User-11" and extra styles. The subtype allows easy selection of all added texts (Right click on text > Select > More > Same subtype). Users can also change the subtype to customize styles.   
-外部版添加的文本为“谱表文本”，子类型为“用户-12”，并应用了额外的样式。内部版添加的文本为“指法”，子类型为“用户-11”，并应用了额外的样式。子类型可用来方便地选择所有添加的文本（右击文本 > 选择 > 更多 > 同一子类型）。用户也可以通过改变子类型来自定义样式。
+Outside version adds texts as "staff text" with subtype "User-12" and extra styles. Inside version adds texts as "fingering" with subtype "User-12" and extra styles. The subtype allows easy selection of all added texts (Right click on text > Select > More > Same subtype). Users can also change the subtype to customize styles.   
+外部版添加的文本为“谱表文本”，子类型为“用户-12”，并应用了额外的样式。内部版添加的文本为“指法”，子类型为“用户-12”，并应用了额外的样式。子类型可用来方便地选择所有添加的文本（右击文本 > 选择 > 更多 > 同一子类型）。用户也可以通过改变子类型来自定义样式。
 
 
 #### Acknowledgement | 致谢
