@@ -56,8 +56,8 @@
   "text_style_user_11": ["User-11", "用户-11"],
   "text_style_user_12": ["User-12", "用户-12"],
   "cancel_button_label": ["Cancel", "取消"],
-  "ok_button_label": ["Ok", "确定"],
+  "ok_button_label": ["OK", "确定"],
 
-  "inital_key": ["  Initial Key ", "  初始调号 "],
+  "inital_key": ["  Initial key ", "  初始调号 "],
   "unknown": ["unknown", "未知"]
 }

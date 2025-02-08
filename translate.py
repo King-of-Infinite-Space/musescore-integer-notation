@@ -15,7 +15,7 @@ def translate_qml(template_file, translations_file, langs=("en", "zh")):
         content = template.render({k: v[i] for k, v in translations.items()})
         assert "{{" not in content
         # make sure all variables are replaced
-        output_path = f"dist/{template_file.split('.')[0]}_{lang}.qml"
+        output_path = f"translated/{template_file.split('.')[0]}_{lang}.qml"
         with open(output_path, "w", encoding='utf-8') as file:
             file.write(content)
 
