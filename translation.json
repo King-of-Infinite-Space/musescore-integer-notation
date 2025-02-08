@@ -42,7 +42,7 @@
   "hide_method_visibility": ["visibility", "可见性"],
   "notehead_color_label": ["Notehead color (RGB value)", "符头颜色 (RGB值)"],
   "text_style_label": ["Text style", "文字样式"],
-  "text_style_custom_11": ["Custom (User-11)", "自定义 (用户-11)"],
+  "text_style_custom": ["Custom-12", "自定义-12"],
   "text_style_user_1": ["User-1", "用户-1"],
   "text_style_user_2": ["User-2", "用户-2"],
   "text_style_user_3": ["User-3", "用户-3"],

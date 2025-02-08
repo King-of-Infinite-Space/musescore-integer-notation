@@ -275,7 +275,7 @@ MuseScore {
                 textRole: "text"
                 model: ListModel {
                     ListElement {
-                        text: "{{ text_style_custom_11 }}"
+                        text: "{{ text_style_custom }}"
                         value: -1
                     }
                     ListElement {
@@ -304,7 +304,7 @@ MuseScore {
                     }
                     ListElement {
                         text: "{{ text_style_user_7 }}"
-                        value: 60
+                        value: 55
                     }
                     ListElement {
                         text: "{{ text_style_user_8 }}"
@@ -410,8 +410,8 @@ MuseScore {
 
     function formatText(textEl, isGrace) {
         if (inputStyleGroup.currentIndex == 0) {
-            // 60 = User-12
-            textEl.subStyle = 59
+            // as of MS 4.4, 59 = User-7, 64 = User-12
+            textEl.subStyle = 64
             textEl.autoplace = false;
             // automatically place the text to prevent overlapping with other elements
             textEl.align = Align.RIGHT + Align.VCENTER;
@@ -426,7 +426,7 @@ MuseScore {
                 textEl.offsetY = 0.5
             }
         } else {
-            textEl.subStyle = inputStyleGroup.valueAt(inputStyleGroup.currentIndex);
+            textEl.subStyle = inputStyleGroup.valueAt(inputStyleGroup.currentIndex) + 4;
         }
         if (isGrace) {
             textEl.fontSize = textEl.fontSize - 2
