@@ -80,7 +80,7 @@ MuseScore {
         }
         RowLayout {
             Label {
-                text: findKeySignature()
+                text: getKeySigText()
                 Layout.fillWidth: true
             }
         }
@@ -366,23 +366,33 @@ MuseScore {
             quit();
     }
 
-    function pcToNoteName(pc, format) {
-        var noteNamesFormats = {
-            "flat": ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"],
-            "sharp": ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"],
-        }
-        return noteNamesFormats[format][pc];
-    }
-
     function keySigToPitchClass(keySig) {
-        var offsetToClass = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5];
-        var keyIndex = keySig;
-        if (keyIndex < 0)
-            keyIndex += 12;
-        return offsetToClass[keyIndex];
+        const offsetToClass = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5];
+        return offsetToClass[(keySig + 12)%12];
     }
 
-    function findKeySignature() {
+    function keySigToNames(keySig) {
+        const mapping = {
+            "0": ["C", "A"],
+            "1": ["G", "E"],
+            "2": ["D", "B"],
+            "3": ["A", "F#"],
+            "4": ["E", "C#"],
+            "5": ["B", "G#"],
+            "6": ["F#", "D#"],
+            "7": ["C#", "A#"],
+            "-1": ["F", "D"],
+            "-2": ["Bb", "G"],
+            "-3": ["Eb", "C"],
+            "-4": ["Ab", "F"],
+            "-5": ["Db", "Bb"],
+            "-6": ["Gb", "Eb"],
+            "-7": ["Cb", "Ab"]
+        }
+        return mapping[keySig.toString()]
+    }
+
+    function getKeySigText() {
         var c = curScore.newCursor();
         // c.inputStateMode = Cursor.INPUT_STATE_SYNC_WITH_SCORE;
         var keySigOffset = c.keySignature;
@@ -391,21 +401,26 @@ MuseScore {
             return prefix + "{{unknown}}";
         }
         var pitchClass = keySigToPitchClass(keySigOffset);
-        var noteName = pcToNoteName(pitchClass, keySigOffset >= 0 ? "sharp" : "flat");
+        var noteNames = keySigToNames(keySigOffset);
 
-        var keySigText = noteName;
-        if (keySigOffset > 0) {
-            keySigText += " (" + "♯".repeat(keySigOffset) + ")";
-        } else if (keySigOffset < 0) {
-            keySigText += " (" + "♭".repeat(-keySigOffset) + ")";
+        var keySigText = `${noteNames[0]} Maj / ${noteNames[1]} min`;
+        if (keySigOffset != 0) {
+            const symbol = keySigOffset > 0 ? "#" : "b";
+            // const symbol = keySigOffset > 0 ? "♯" : "♭";
+            keySigText = `(${symbol}×${Math.abs(keySigOffset)}) ${keySigText}`
         }
+
         var refNote = pitchClass + 60;
         if (refNote >= 67) {
             refNote -= 12;
         }
-        var oct = refNote % 12 - 1;
+        var oct = Math.floor(refNote / 12) - 1;
+        // special case for Cb (C4=60, Cb4=59, B3=59)
+        if (noteNames[0] == "Cb") {
+            oct += 1;
+        }
         inputReferenceNote.value = refNote;
-        return `${prefix}${keySigText}, ${noteName}${oct}=${refNote}`;
+        return `${prefix}${keySigText}, ${noteNames[0]}${oct}=${refNote}`;
     }
 
     function formatText(textEl, isGrace) {
@@ -583,29 +598,36 @@ MuseScore {
     }
 
     function createRefNoteSigText(initialKeySig, currKeySig) {
-        let el = newElement(Element.STAFF_TEXT)
-        let text = ""
         let pc1 = keySigToPitchClass(initialKeySig)
         let pc2 = keySigToPitchClass(currKeySig)
+        const keyNames = keySigToNames(currKeySig)
         let offset =  inputFollowKeyChange.checked ? (pc2 + 12 - pc1) % 12 : 0
         if (offset > 6) {
             offset -= 12
         }
+        let newRefNote = inputReferenceNote.value + offset
+        let prefix = ""
+        let keyName = keyNames[0]
+        let octave = ""
+        let suffix = ""
         if (inputRefSigFormat.currentIndex == 0)  {
-            text += inputNotationFormat.currentIndex == 0 ? "0=" : "1="
-            text += pcToNoteName((inputReferenceNote.value + offset) % 12, currKeySig >= 0 ? "sharp" : "flat")
+            prefix= inputNotationFormat.currentIndex == 0 ? "0=" : "1="
+            // major key
         } else if (inputRefSigFormat.currentIndex == 1) {
-            text += inputNotationFormat.currentIndex == 0 ? "9=" : "6="
-            text += pcToNoteName((inputReferenceNote.value + 9 + offset) % 12, currKeySig >= 0 ? "sharp" : "flat")
+            prefix= inputNotationFormat.currentIndex == 0 ? "9=" : "6="
+            keyName = keyNames[1]
+            // minor key
+            newRefNote += 9
         }
         if (inputOctaveDots.checked) {
-            let refNote = inputReferenceNote.value + offset
-            if (inputRefSigFormat.currentIndex == 1)
-                refNote += 9
-            let octave = Math.floor(refNote / 12) - 1;
-            text += octave
+            octave = Math.floor(newRefNote / 12) - 1;
+            if (keyName == "Cb") {
+                octave += 1;
+            }
+            suffix = ` (${newRefNote})`
         }
-        el.text = text
+        let el = newElement(Element.STAFF_TEXT)
+        el.text = `${prefix}${keyName}${octave}${suffix}`
         return el;
     }
 
